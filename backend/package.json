@@ -1,12 +1,12 @@
+
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "GuessMaster Socket.IO backend",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -25,6 +25,6 @@
     "@types/node": "^26.6.6",
     "nodemon": "^3.1.14",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   }
 }
