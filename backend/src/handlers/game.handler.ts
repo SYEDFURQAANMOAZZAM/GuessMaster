@@ -1,11 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { gameManager, roomManager } from '../classes/managers';
+import { WORDS } from '../words';
 
-const WORDS = [
-  'apple', 'elephant', 'guitar', 'mountain', 'rocket',
-  'pizza', 'rainbow', 'airplane', 'castle', 'penguin',
-  'dinosaur', 'waterfall', 'basketball', 'sunflower',
-];
 
 const getWordOptions = () =>
   [...WORDS].sort(() => Math.random() - 0.5).slice(0, 3);
