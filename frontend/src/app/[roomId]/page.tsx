@@ -1,7 +1,8 @@
+
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 import { socket } from '@/lib/socket/socket';
 import { useSocket } from '@/lib/hooks/useSocket';
@@ -43,6 +44,7 @@ type GameFinishedPayload = {
 
 function RoomContent() {
   const { roomId } = useParams<{ roomId: string }>();
+  const router = useRouter();
   const { socketId } = useSocket();
 
   const [players, setPlayers] = useState<Player[]>([]);
@@ -176,7 +178,17 @@ function RoomContent() {
       setGamePhase('finished');
     };
 
+    // Handle room sync errors, including browser refresh.
     const handleError = ({ message }: { message: string }) => {
+      if (
+        message === 'Player not found in room' ||
+        message === 'Room not found' ||
+        message === 'Room sync failed'
+      ) {
+        router.replace('/');
+        return;
+      }
+
       setErrorMessage(message);
     };
 
@@ -231,7 +243,7 @@ function RoomContent() {
       socket.off('room:kicked', handleKicked);
       socket.off('connect', syncRoom);
     };
-  }, [roomId]);
+  }, [roomId, router]);
 
   const isHost = !!socketId && socketId === hostId;
   const isDrawer = !!socketId && socketId === drawerId;

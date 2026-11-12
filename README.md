@@ -1,10 +1,10 @@
-# GuessMaster
+# 🎨 GuessMaster
 
 ![GuessMaster logo](frontend/public/guessmasterlogo.png)
 
 **GuessMaster** is a fun, real-time multiplayer drawing and word-guessing game. Players join a room, take turns drawing secret words, and race to guess what is being drawn before the round timer expires. Invite friends, compete for points, and see who finishes at the top of the leaderboard.
 
-🎮 **Play online:** [https://guessmastertask.netlify.app/](https://guessmastertask.netlify.app/)
+🎮 **Play online:** [https://guess-master-zeta.vercel.app/](https://guess-master-zeta.vercel.app/)
 
 ---
 
@@ -20,7 +20,7 @@
 | **Express**         | HTTP server foundation    | Provides a lightweight server and a health-check endpoint; game actions primarily use Socket.IO.                         |
 | **Socket.IO**       | Realtime communication    | Supports bidirectional events, room-based broadcasts, connection handling, and reconnection behavior.                    |
 | **HTML Canvas API** | Drawing surface           | Gives the drawer a responsive drawing area and lets each browser render received strokes.                                |
-| **Netlify**         | Frontend deployment       | Hosts the Next.js frontend and provides Git-based deployments.                                                           |
+| **Vercel**          | Frontend deployment       | Hosts the Next.js frontend and provides Git-based deployments with configurable deployment regions.                      |
 | **Render**          | Backend deployment        | Runs the Node.js Socket.IO backend as a separate service from the frontend.                                              |
 
 ---
@@ -37,7 +37,7 @@ flowchart TB
         C["Other players"]
     end
 
-    subgraph Frontend["Frontend - Next.js on Netlify"]
+    subgraph Frontend["Frontend - Next.js on Vercel"]
         UI["React components"]
         CANVAS["Canvas drawing and rendering"]
         CLIENT["Socket.IO client"]
@@ -664,29 +664,45 @@ sequenceDiagram
 
 # Deployment
 
+GuessMaster uses separate deployment services for its frontend and backend.
+
 ## Live frontend
 
-[https://guessmastertask.netlify.app/](https://guessmastertask.netlify.app/)
+The Next.js frontend is deployed on **Vercel**.
+
+🎮 **Play GuessMaster:** [https://guess-master-zeta.vercel.app/](https://guess-master-zeta.vercel.app/)
+
+The frontend was previously deployed on Netlify and has now been migrated to Vercel.
 
 ## Backend
 
-The frontend connects to the backend using `NEXT_PUBLIC_SOCKET_URL`. Set it in Netlify's environment variables to the deployed backend URL.
+The Node.js, Express, and Socket.IO backend is deployed on **Render**.
+
+The frontend connects to the backend using `NEXT_PUBLIC_SOCKET_URL`.
+
+Configure the following environment variable in the Vercel project settings:
 
 ```env
 NEXT_PUBLIC_SOCKET_URL=https://YOUR-BACKEND-URL
 ```
 
-Backend environment:
+## Backend environment variables
+
+Configure the following environment variables in the Render service:
 
 ```env
 PORT=5000
-CLIENT_URL=https://guessmastertask.netlify.app
+CLIENT_URL=https://guess-master-zeta.vercel.app
 ```
 
+### Deployment configuration
+
 - `PORT` is the backend listening port; hosting providers may assign it automatically.
-- `CLIENT_URL` should match the frontend origin configured for Socket.IO CORS.
+- `CLIENT_URL` should match the Vercel frontend origin configured for Socket.IO CORS.
+- `NEXT_PUBLIC_SOCKET_URL` must contain the publicly accessible backend URL.
 - Keep secrets and backend environment values in the hosting provider settings, not in Git.
 - Redeploy the frontend after changing `NEXT_PUBLIC_SOCKET_URL`, because it is bundled at build time.
+- Ensure the backend CORS configuration allows the deployed Vercel frontend origin.
 
 ---
 
@@ -744,3 +760,6 @@ GuessMaster uses a **server-authoritative multiplayer architecture**:
 - The frontend captures input and renders the current state.
 - Socket.IO synchronizes events and state between players in realtime.
 - Classes model domain objects; managers coordinate room/game operations; handlers keep socket event logic organized.
+- The frontend is deployed on **Vercel**, while the backend is deployed on **Render**.
+
+🎮 **Play GuessMaster:** https://guess-master-zeta.vercel.app/
